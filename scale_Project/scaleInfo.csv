@@ -1,0 +1,6 @@
+entry ,scaleName             ,Description
+    1 ,"Modstand ud af step" ,"Mængden af kraft der skal tilføjes, for at komme ud af nuværende step. Hvor meget kraft jeg skal lægge i at få knappen i næste hak."
+    2 ,"Kraft ind i step"    ,"I hvor høj grad knappen selv flytter sig ind i næste niveau/hak. I hvor høj grad knappen hjælper dig med at komme i hak."
+    3 ,"Range"               ,"Mængden af grader som knappen kan drejes."
+    4 ,"Step størrelse"      ,"Vinkelafstanden mellem steps og derfor afstanden fra et step til et andet."
+    5 ,"Ustabil"             ,"Hvor løs knappen sidder på sin grundflade."
