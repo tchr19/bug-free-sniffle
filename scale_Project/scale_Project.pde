@@ -1,100 +1,96 @@
-SliderScale mySlider;
-float buttonX, buttonY, buttonWidth, buttonHeight;
-float closeButtonX, closeButtonY, closeButtonSize;
-int firstRoundCounter, secondRoundCounter;
+class SliderScale {
+  float sliderX;
+  boolean dragging;
+  int numAnchors; 
+  float[] anchorX;
+  float spacing;
+  boolean showSlider;
+
+  SliderScale(int numAnchors) {
+    this.numAnchors = numAnchors;
+    anchorX = new float[numAnchors];
+    dragging = false;
+    spacing = 0;
+    showSlider = false; // Initially, the slider button is hidden - Changes to true when slider is pressed.
+    initializeAnchors();
+  }
+
+    // Function to make the anchor points, and space them equally apart. 
+  void initializeAnchors() {
+    spacing = (width - 200) / (numAnchors - 1);
+    for (int i = 0; i < numAnchors; i++) {
+      anchorX[i] = map(i, 0, numAnchors - 1, 300 + spacing / 2, width - 300 - spacing / 2); // 300 er omkring slut og start punkt. 
+    }
+    // Scale lables - hardcoded
+    fill(0);
+    textSize(16);
+    stroke(5);
+    textAlign(CENTER, CENTER);
+    text("SLET IKKE", spacing, height * 1/3 + 20);
+    text("LIDT", spacing, height * 1/3 + 20);
+    text("MODERAT", spacing, height * 1/3 + 20);
+    text("MEGET", spacing, height * 1/3 + 20);
+    text("EKSTREMT", spacing, height * 1/3 + 20);
+  }
+
+    // Draw the actual scale in the canvas. 
+  void drawScale() {
+    float scaleY = height * 1 / 3;
+    stroke(0);
+    strokeWeight(3);
+    line(300, scaleY, width - 300, scaleY); // 300 er hvor den starter og slutter. 
+
+    stroke(0);
+    strokeWeight(5);
+    line(width * 1/3 ,150, width*2/3,150);
 
 
+    fill(0);
+    for (int i = 0; i < numAnchors; i++) {
+      ellipse(anchorX[i], scaleY, 10, 10);
+    }
 
-void setup() {
-    fullScreen();
-    mySlider = new SliderScale(9); // 9 anchor scale
+        // Refers to methods under mouse actions in bottum. 
+    if (showSlider) {
+      fill(150);
+      ellipse(sliderX, scaleY, 30, 30);
+    }
+  }
+
+        //Place the ellipse for marker. 
+  void mousePressed() {
+    float d = dist(mouseX, mouseY, sliderX, height * 1 / 3);
+    if (d < 15) {
+      dragging = true;
+    }
+  }
+
+        // Stops following when released. 
+  void mouseReleased() {
+    dragging = false;
+  }
+
+        // If dragged than change ellipse position to mouseX
+  void mouseDragged() {
+    if (dragging) {
+      sliderX = constrain(mouseX, 300, width - 300);
+    }
+  }
+
+        // Prints the value to the terminal to follow the state of the program.
+  void printSliderValue() {
+    int sliderValue = int(map(sliderX, 300, width - 300, 0, 100)); 
+    println("Slider Value: " + sliderValue);
     
-    //Submitting:
-    buttonX = width/2 - buttonWidth/2;
-    buttonY = height - 50;
-    buttonWidth = 100;
-    buttonHeight = 40;
-
-    // close application
-    closeButtonSize = 30;
-    closeButtonX = width - 40;
-    closeButtonY = 10;
-
-
-    firstRoundCounter = 0; // Var for storing trial nr. in first round
-    secondRoundCounter = 0;  // var for storing trial nr. in second round.
-
-
-}
-
-
-void draw() {
-  background(255);
-
-  mySlider.drawScale();
-
-  // Draw the submit button
-  fill(56, 232, 94);
-  rect(buttonX, buttonY, buttonWidth, buttonHeight, 10);
-
-  // Display the submit button label
-  fill(0);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  text("Submit", buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
-
-  // Draw the close button
-  fill(255, 0, 0); // Red color for the close button
-  rect(closeButtonX, closeButtonY, closeButtonSize, closeButtonSize, 5);
-
-  // Display close button label
-  fill(255);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  text("X", closeButtonX + closeButtonSize / 2, closeButtonY + closeButtonSize / 2);
-
-  // Display scale label
-  fill(0);
-  textSize(100);
-  textAlign(CENTER,CENTER);
-  text("TEST", width/2, 95);
-
-  
-}
-
-
-
-void mousePressed() {
-  // Check if the mouse is over the submit button
-  if (mouseX > buttonX && mouseX < buttonX + buttonWidth &&
-      mouseY > buttonY && mouseY < buttonY + buttonHeight) {
-    mySlider.printSliderValue();
-    mySlider.initializeAnchors(); // Reset the slider position to the initial state
+    // Hide the slider whwn submitting.
+    setShowSlider(false);
   }
 
-  // Check if the mouse is over the close button
-  if (mouseX > closeButtonX && mouseX < closeButtonX + closeButtonSize &&
-      mouseY > closeButtonY && mouseY < closeButtonY + closeButtonSize) {
-    exit(); // Close the application
+  void setShowSlider(boolean showSlider) {
+    this.showSlider = showSlider;
   }
 
-  // Check if the mouse is over the scale
-  float scaleY = height * 1 / 3;
-  if (mouseY > scaleY - 15 && mouseY < scaleY + 15) {
-    mySlider.setShowSlider(true);
-    mySlider.setSliderPosition(mouseX); // Set the slider position to the mouse click
+  void setSliderPosition(float x) {
+    sliderX = constrain(x, 100, width - 100);
   }
-
-  // Call the mousePressed function of the SliderScale object
-  mySlider.mousePressed();
-}
-
-void mouseReleased() {
-// Call the mouseReleased function of the SliderScale object
-  mySlider.mouseReleased();
-}
-
-void mouseDragged() {
-  // Call the mouseDragged function of the SliderScale object
-  mySlider.mouseDragged();
 }
